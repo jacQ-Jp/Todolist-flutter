@@ -79,7 +79,7 @@ flutter\_native\_splash: ^2.3.10
 * Pastikan backend Laravel berjalan di URL yang sama dengan yang digunakan di Flutter (ubah endpoint jika diperlukan).
 * Gunakan emulator atau perangkat fisik dengan koneksi ke localhost yang benar (gunakan IP 10.0.2.2 di Android emulator untuk mengakses localhost).
 
-## 📄 Identitas Pembuat
+
 
 
 
