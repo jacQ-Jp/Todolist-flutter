@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         // Simpan token dan data user
         if (data['token'] != null) {
           await AuthService.saveToken(data['token']);
@@ -50,16 +50,17 @@ class _LoginPageState extends State<LoginPage> {
         if (data['user'] != null) {
           await AuthService.saveUserData(data['user']);
         }
-        
+
         // Navigate ke TaskPage dan hapus semua route sebelumnya
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => TaskPage()),
+          MaterialPageRoute(builder: (context) => ToDoHomePage()),
           (route) => false,
         );
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Login berhasil! Selamat datang ${data['user']?['name'] ?? 'User'}'),
+            content: Text(
+                'Login berhasil! Selamat datang ${data['user']?['name'] ?? 'User'}'),
             backgroundColor: Colors.green,
           ),
         );
@@ -76,20 +77,21 @@ class _LoginPageState extends State<LoginPage> {
       print('Login error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Tidak dapat terhubung ke server. Menggunakan mode demo.'),
+          content:
+              Text('Tidak dapat terhubung ke server. Menggunakan mode demo.'),
           backgroundColor: Colors.orange,
         ),
       );
-      
+
       // Demo login - simpan data dummy
       await AuthService.saveToken('demo_token_123');
       await AuthService.saveUserData({
         'name': 'Demo User',
         'email': _emailController.text.trim(),
       });
-      
+
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => TaskPage()),
+        MaterialPageRoute(builder: (context) => ToDoHomePage()),
         (route) => false,
       );
     } finally {
@@ -102,113 +104,108 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: const Color(0xFF10292F),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 60),
-              // Logo/Icon
-              Container(
-                height: 120,
-                child: Icon(
-                  Icons.task_alt,
-                  size: 80,
-                  color: Colors.indigo,
-                ),
-              ),
-              SizedBox(height: 20),
-              // Title
-              Text(
-                'Task Manager Pro',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade700,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Masuk ke akun Anda',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              SizedBox(height: 40),
-              // Login Form
-              Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(24),
+              SizedBox(height: 80),
+              Center(
+                child: Container(
+                  width: 420,
+                  padding: EdgeInsets.symmetric(vertical: 40, horizontal: 32),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 24,
+                        offset: Offset(0, 8),
+                      ),
+                    ],
+                  ),
                   child: Form(
                     key: _formKey,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Email Field
+                        Text(
+                          'Log in',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 32),
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon: Icon(Icons.email_outlined),
+                            hintText: 'Email',
+                            filled: true,
+                            fillColor: Colors.grey[100],
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Colors.indigo),
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.cyan, width: 2),
                             ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 18),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Email tidak boleh kosong';
-                            }
-                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                              return 'Format email tidak valid';
+                              return 'Username/email tidak boleh kosong';
                             }
                             return null;
                           },
                         ),
-                        SizedBox(height: 20),
-                        // Password Field
+                        SizedBox(height: 18),
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Password',
-                            prefixIcon: Icon(Icons.lock_outline),
+                            hintText: 'Password',
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.cyan, width: 2),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 18),
                             suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                              ),
+                              icon: Icon(_obscurePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
                               onPressed: () {
                                 setState(() {
                                   _obscurePassword = !_obscurePassword;
                                 });
                               },
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Colors.grey.shade300),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: Colors.indigo),
                             ),
                           ),
                           validator: (value) {
@@ -221,19 +218,18 @@ class _LoginPageState extends State<LoginPage> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 24),
-                        // Login Button
+                        SizedBox(height: 32),
                         SizedBox(
                           width: double.infinity,
-                          height: 50,
+                          height: 54,
                           child: ElevatedButton(
                             onPressed: _isLoading ? null : _login,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.indigo,
+                              backgroundColor: Colors.cyan[700],
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              elevation: 2,
+                              elevation: 0,
                             ),
                             child: _isLoading
                                 ? SizedBox(
@@ -241,50 +237,47 @@ class _LoginPageState extends State<LoginPage> {
                                     width: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
                                     ),
                                   )
                                 : Text(
-                                    'Masuk',
+                                    'Log in',
                                     style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.white,
                                     ),
                                   ),
+                          ),
+                        ),
+                        SizedBox(height: 18),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterPage()),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                'or, sign up',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 24),
-              // Register Link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Belum punya akun? ',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => RegisterPage()),
-                      );
-                    },
-                    child: Text(
-                      'Daftar di sini',
-                      style: TextStyle(
-                        color: Colors.indigo,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
