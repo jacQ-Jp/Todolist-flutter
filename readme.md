@@ -81,7 +81,6 @@ flutter\_native\_splash: ^2.3.10
 
 ## 📄 Identitas Pembuat
 
-Nama: Rama Fitrian Handoko
-No Absen : 27
+
 
 
